@@ -30,7 +30,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<MemberListPage />} />
                 <Route path="/members/:id" element={<MemberDetailPage />} />
-                <Route path="/analytics" element={<AnalyticsLayout />}>
+                <Route path="/report" element={<AnalyticsLayout />}>
                   <Route index element={<AnalyticsHomePage />} />
                   <Route
                     path="professions"
@@ -41,6 +41,7 @@ export default function App() {
                     element={<AnalyticsCountriesPage />}
                   />
                 </Route>
+                <Route path="/analytics/*" element={<Navigate to="/report" replace />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </main>

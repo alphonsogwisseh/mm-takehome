@@ -33,8 +33,8 @@ export function AnalyticsPageShell({ eyebrow, title, children }: AnalyticsPageSh
         title={title}
         meta={
           analytics
-            ? `${analytics.totalUsers.toLocaleString()} users${hasScope ? ' in current scope' : ' across the full directory'}`
-            : 'Loading aggregates…'
+            ? `${analytics.totalUsers.toLocaleString()} users${hasScope ? ' in this report' : ' in the full report'}`
+            : 'Loading report…'
         }
       />
 
@@ -87,10 +87,10 @@ export function AnalyticsPageShell({ eyebrow, title, children }: AnalyticsPageSh
         <div className="status-block">Loading…</div>
       ) : isError || !analytics ? (
         <div className="status-block status-block--error">
-          {error?.message ?? 'Unable to load analytics'}
+          {error?.message ?? 'Unable to load report'}
         </div>
       ) : analytics.totalUsers === 0 ? (
-        <div className="status-block">No users match this scope.</div>
+        <div className="status-block">No users match this report.</div>
       ) : (
         children({ analytics })
       )}

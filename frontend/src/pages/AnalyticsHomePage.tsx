@@ -203,7 +203,7 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
 
         <ChartCard
           title="Profession mix"
-          description="Share of the directory held by each profession. Click a slice or legend item to filter."
+          description="Share of users in this report held by each profession. Click a slice or legend item to filter."
         >
           <DonutChart
             total={analytics.totalUsers}

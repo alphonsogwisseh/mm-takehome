@@ -11,7 +11,7 @@ export function AnalyticsProfessionsPage() {
   const { professions, toggleProfession } = useAnalyticsScope();
 
   return (
-    <AnalyticsPageShell eyebrow="Professions" title="Workforce composition">
+    <AnalyticsPageShell eyebrow="Professions" title="Profession report">
       {({ analytics }) => {
         const { colors, groups } = yearProfessionStacks(analytics);
 
@@ -45,7 +45,7 @@ export function AnalyticsProfessionsPage() {
             <div className="chart-grid reveal-3">
               <ChartCard
                 title="Profession share"
-                description="Pie view of how the directory divides across roles. Click a slice to filter."
+                description="Pie view of how this report divides across roles. Click a slice to filter."
               >
                 <PieChart
                   caption="Profession share"

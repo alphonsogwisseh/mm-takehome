@@ -78,7 +78,7 @@ function BreakdownList({
     return (
       <div className="country-compare__section">
         <h4 className="country-compare__section-title">{title}</h4>
-        <p className="country-compare__empty">None in this scope</p>
+        <p className="country-compare__empty">None in this report</p>
       </div>
     )
   }
@@ -126,7 +126,7 @@ export function AnalyticsCountriesPage() {
   })
 
   return (
-    <AnalyticsPageShell eyebrow="Countries" title="Geographic footprint">
+    <AnalyticsPageShell eyebrow="Countries" title="Country report">
       {({ analytics }) => {
         const mapCountries = mapQuery.data?.byCountry ?? analytics.byCountry
         const comparison =
@@ -136,7 +136,7 @@ export function AnalyticsCountriesPage() {
 
         return (
           <>
-            <section className="kpi-row reveal-2" aria-label="Country headlines">
+            <section className="kpi-row kpi-row--2 reveal-2" aria-label="Country report headlines">
               <article className="kpi">
                 <p className="kpi__label">Countries</p>
                 <p className="kpi__value">{analytics.countryCount.toLocaleString()}</p>
@@ -144,10 +144,6 @@ export function AnalyticsCountriesPage() {
               <article className="kpi">
                 <p className="kpi__label">Cities</p>
                 <p className="kpi__value">{analytics.cityCount.toLocaleString()}</p>
-              </article>
-              <article className="kpi">
-                <p className="kpi__label">Selected</p>
-                <p className="kpi__value">{countries.length || 'All'}</p>
               </article>
             </section>
 
@@ -172,7 +168,7 @@ export function AnalyticsCountriesPage() {
                 <>
                   <ChartCard
                     title="Headcount comparison"
-                    description="Selected countries ranked by users in the current profession scope."
+                    description="Selected countries ranked by users in the current report filters."
                     span="full"
                   >
                     <BarList

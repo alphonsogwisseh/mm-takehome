@@ -8,22 +8,22 @@ import { titleCase } from "../utils/format";
 
 const NAV = [
   {
-    to: "/analytics",
+    to: "/report",
     end: true,
     label: "Overview",
-    hint: "KPIs and headline charts",
+    hint: "Report KPIs and headline charts",
   },
   {
-    to: "/analytics/professions",
+    to: "/report/professions",
     end: false,
     label: "Professions",
-    hint: "Mix, dominance, yearly intake",
+    hint: "Profession mix in this report",
   },
   {
-    to: "/analytics/countries",
+    to: "/report/countries",
     end: false,
     label: "Countries",
-    hint: "Map, cities, multi-select",
+    hint: "Map and country comparison",
   },
 ] as const;
 
@@ -98,8 +98,8 @@ export function AnalyticsLayout() {
   return (
     <AnalyticsScopeContext.Provider value={scopeValue}>
       <div className="analytics-layout">
-        <aside className="analytics-nav" aria-label="Analytics sections">
-          <p className="analytics-nav__eyebrow">Analytics</p>
+        <aside className="analytics-nav" aria-label="Report sections">
+          <p className="analytics-nav__eyebrow">Report</p>
           <nav className="analytics-nav__list">
             {NAV.map((item) => (
               <NavLink
@@ -118,7 +118,7 @@ export function AnalyticsLayout() {
 
           <div className="analytics-nav__scope">
             <div className="analytics-nav__scope-head">
-              <p className="analytics-nav__scope-title">Scope</p>
+              <p className="analytics-nav__scope-title">Report filters</p>
               {hasFilters ? (
                 <button
                   type="button"
@@ -130,9 +130,9 @@ export function AnalyticsLayout() {
               ) : null}
             </div>
             <div className="field">
-              <label htmlFor="analytics-profession">Profession</label>
+              <label htmlFor="report-profession">Profession</label>
               <MultiCombobox
-                id="analytics-profession"
+                id="report-profession"
                 label="Professions"
                 placeholder="All professions"
                 values={professions}
@@ -142,9 +142,9 @@ export function AnalyticsLayout() {
               />
             </div>
             <div className="field">
-              <label htmlFor="analytics-country">Country</label>
+              <label htmlFor="report-country">Country</label>
               <MultiCombobox
-                id="analytics-country"
+                id="report-country"
                 label="Countries"
                 placeholder="All countries"
                 values={countries}

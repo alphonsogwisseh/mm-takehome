@@ -55,12 +55,12 @@ export function Header() {
               Users
             </NavLink>
             <NavLink
-              to="/analytics"
+              to="/report"
               className={({ isActive }) =>
                 `site-header__link${isActive ? " is-active" : ""}`
               }
             >
-              Analytics
+              Report
             </NavLink>
           </nav>
           <button

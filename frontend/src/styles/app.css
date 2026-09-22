@@ -1084,6 +1084,10 @@ tr:hover .btn--ghost,
   margin-bottom: 18px;
 }
 
+.kpi-row--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .kpi {
   position: relative;
   padding: 18px 18px 16px;
@@ -1903,6 +1907,10 @@ tr:hover .btn--ghost,
 @media (max-width: 1100px) {
   .kpi-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi-row--2 {
+    grid-template-columns: 1fr;
   }
 
   .donut {

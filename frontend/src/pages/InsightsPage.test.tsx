@@ -59,13 +59,13 @@ function renderPage() {
       { client },
       createElement(
         MemoryRouter,
-        { initialEntries: ["/analytics"] },
+        { initialEntries: ["/report"] },
         createElement(
           Routes,
           null,
           createElement(
             Route,
-            { path: "/analytics", element: createElement(AnalyticsLayout) },
+            { path: "/report", element: createElement(AnalyticsLayout) },
             createElement(Route, {
               index: true,
               element: createElement(AnalyticsHomePage),
