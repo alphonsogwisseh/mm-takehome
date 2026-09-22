@@ -29,23 +29,14 @@ export function AnalyticsCountriesPage() {
               <article className="kpi">
                 <p className="kpi__label">Countries</p>
                 <p className="kpi__value">{analytics.countryCount.toLocaleString()}</p>
-                <p className="kpi__note">
-                  {countries.length > 0 ? 'in selection' : 'represented'}
-                </p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Cities</p>
                 <p className="kpi__value">{analytics.cityCount.toLocaleString()}</p>
-                <p className="kpi__note">
-                  {countries.length > 0 ? 'across selected countries' : 'across the directory'}
-                </p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Selected</p>
                 <p className="kpi__value">{countries.length || 'All'}</p>
-                <p className="kpi__note">
-                  {countries.length > 0 ? 'countries on the map' : 'no country filter'}
-                </p>
               </article>
             </section>
 

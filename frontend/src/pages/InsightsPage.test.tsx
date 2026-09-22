@@ -93,7 +93,6 @@ describe('AnalyticsHomePage', () => {
 
     expect(within(headline).getByText('9')).toBeInTheDocument()
     expect(within(headline).getByText('Mar 2021')).toBeInTheDocument()
-    expect(within(headline).getByText(/Canada on top/i)).toBeInTheDocument()
   })
 
   it('renders each chart with an accessible summary', async () => {

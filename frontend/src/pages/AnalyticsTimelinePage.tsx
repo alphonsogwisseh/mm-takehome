@@ -43,19 +43,14 @@ export function AnalyticsTimelinePage() {
               <article className="kpi">
                 <p className="kpi__label">Peak month</p>
                 <p className="kpi__value kpi__value--text">{busiest.label}</p>
-                <p className="kpi__note">{busiest.value.toLocaleString()} joins</p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Peak year</p>
                 <p className="kpi__value">{peakYear || '—'}</p>
-                <p className="kpi__note">
-                  {(byYearMap.get(peakYear) ?? 0).toLocaleString()} joins
-                </p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Quietest active month</p>
                 <p className="kpi__value kpi__value--text">{quietest.label}</p>
-                <p className="kpi__note">{quietest.value.toLocaleString()} joins</p>
               </article>
             </section>
 

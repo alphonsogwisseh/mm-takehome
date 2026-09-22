@@ -17,9 +17,6 @@ export function AnalyticsProfessionsPage() {
 
         const leader = analytics.byProfession[0]
         const runnerUp = analytics.byProfession[1]
-        const leaderShare = leader
-          ? ((leader.count / analytics.totalUsers) * 100).toFixed(1)
-          : '0'
 
         return (
           <>
@@ -27,22 +24,17 @@ export function AnalyticsProfessionsPage() {
               <article className="kpi">
                 <p className="kpi__label">Distinct roles</p>
                 <p className="kpi__value">{analytics.professionCount}</p>
-                <p className="kpi__note">in this scope</p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Leading role</p>
                 <p className="kpi__value kpi__value--text">
                   {leader ? titleCase(leader.label) : '—'}
                 </p>
-                <p className="kpi__note">{leaderShare}% of users</p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Runner-up</p>
                 <p className="kpi__value kpi__value--text">
                   {runnerUp ? titleCase(runnerUp.label) : '—'}
-                </p>
-                <p className="kpi__note">
-                  {runnerUp ? `${runnerUp.count.toLocaleString()} people` : 'Single profession'}
                 </p>
               </article>
             </section>

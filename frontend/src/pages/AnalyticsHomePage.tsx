@@ -46,8 +46,6 @@ function summarize(analytics: Analytics) {
     matrixCountries,
     matrixLookup,
     busiest,
-    topCountry: analytics.byCountry[0],
-    topProfession: analytics.byProfession[0],
   }
 }
 
@@ -64,26 +62,18 @@ export function AnalyticsHomePage() {
               <article className="kpi">
                 <p className="kpi__label">Users</p>
                 <p className="kpi__value">{analytics.totalUsers.toLocaleString()}</p>
-                <p className="kpi__note">in scope</p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Professions</p>
                 <p className="kpi__value">{analytics.professionCount}</p>
-                <p className="kpi__note">
-                  {view.topProfession ? `${titleCase(view.topProfession.label)} leads` : '—'}
-                </p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Countries</p>
                 <p className="kpi__value">{analytics.countryCount.toLocaleString()}</p>
-                <p className="kpi__note">
-                  {view.topCountry ? `${titleCase(view.topCountry.label)} on top` : '—'}
-                </p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Busiest month</p>
                 <p className="kpi__value kpi__value--text">{view.busiest.label}</p>
-                <p className="kpi__note">{view.busiest.value.toLocaleString()} joined</p>
               </article>
             </section>
 
