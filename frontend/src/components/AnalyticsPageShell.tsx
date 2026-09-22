@@ -4,7 +4,7 @@ import { PageTitle } from './PageTitle'
 import { titleCase } from '../utils/format'
 
 interface AnalyticsPageShellProps {
-  eyebrow: string
+  eyebrow?: string
   title: string
   children: (args: {
     analytics: NonNullable<ReturnType<typeof useAnalyticsScope>['analytics']>

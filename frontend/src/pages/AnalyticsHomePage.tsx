@@ -266,7 +266,7 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
 
 export function AnalyticsHomePage() {
   return (
-    <AnalyticsPageShell eyebrow="Overview" title="Directory pulse">
+    <AnalyticsPageShell title="Overview">
       {({ analytics }) => <OverviewBody analytics={analytics} />}
     </AnalyticsPageShell>
   )
