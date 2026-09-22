@@ -83,11 +83,6 @@ export function WorldChoropleth({
     return new Set(lookup.keys())
   }, [selectedCountries, atlasNames])
 
-  const mappedUsers = useMemo(
-    () => [...counts.values()].reduce((sum, value) => sum + value, 0),
-    [counts],
-  )
-
   function handleSelect(atlasName: string) {
     if (!onCountryToggle) return
     const seedLabel = seedLabelForAtlasName(
@@ -161,8 +156,7 @@ export function WorldChoropleth({
             </>
           ) : (
             <span className="trend__hint">
-              Click countries to multi-select · scroll to zoom · {mappedUsers.toLocaleString()} users
-              on the map
+              Click countries to multi-select · scroll to zoom
               {selectedCountries.length > 0
                 ? ` · ${selectedCountries.length} selected`
                 : ''}

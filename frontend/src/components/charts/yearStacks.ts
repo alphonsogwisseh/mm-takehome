@@ -40,25 +40,3 @@ export function yearProfessionStacks(analytics: Analytics): {
 
   return { colors, groups }
 }
-
-export function yearTotalsFromMonthRows(
-  byMonth: { year: number; count: number }[],
-): StackedGroup[] {
-  const byYear = new Map<number, number>()
-  for (const entry of byMonth) {
-    byYear.set(entry.year, (byYear.get(entry.year) ?? 0) + entry.count)
-  }
-  return [...byYear.keys()]
-    .sort((a, b) => a - b)
-    .map((year) => ({
-      label: String(year),
-      total: byYear.get(year) ?? 0,
-      segments: [
-        {
-          key: String(year),
-          value: byYear.get(year) ?? 0,
-          color: '#3b82f6',
-        },
-      ],
-    }))
-}

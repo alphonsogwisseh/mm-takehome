@@ -25,12 +25,6 @@ const NAV = [
     label: 'Countries',
     hint: 'Map, cities, multi-select',
   },
-  {
-    to: '/analytics/timeline',
-    end: false,
-    label: 'Timeline',
-    hint: 'Joins by month and year',
-  },
 ] as const
 
 function toggleInList(current: string[], value: string): string[] {

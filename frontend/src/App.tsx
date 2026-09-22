@@ -6,7 +6,6 @@ import { ThemeProvider } from './hooks/useTheme.tsx'
 import { AnalyticsCountriesPage } from './pages/AnalyticsCountriesPage'
 import { AnalyticsHomePage } from './pages/AnalyticsHomePage'
 import { AnalyticsProfessionsPage } from './pages/AnalyticsProfessionsPage'
-import { AnalyticsTimelinePage } from './pages/AnalyticsTimelinePage'
 import { MemberDetailPage } from './pages/MemberDetailPage'
 import { MemberListPage } from './pages/MemberListPage'
 
@@ -35,7 +34,6 @@ export default function App() {
                   <Route index element={<AnalyticsHomePage />} />
                   <Route path="professions" element={<AnalyticsProfessionsPage />} />
                   <Route path="countries" element={<AnalyticsCountriesPage />} />
-                  <Route path="timeline" element={<AnalyticsTimelinePage />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
