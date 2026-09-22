@@ -59,23 +59,12 @@ export function fetchUsers(query: UserQuery): Promise<PagedResponse<User>> {
   return request(`/api/users${toQueryString(query)}`)
 }
 
-/** Fetches every page matching the filters (API max size is 100). */
+/** Fetches every matching row in one request (`size=-1`). */
 export async function fetchAllUsers(
   query: Omit<UserQuery, 'page' | 'size'>,
 ): Promise<User[]> {
-  const pageSize = 100
-  const users: User[] = []
-  let page = 0
-  let totalPages = 1
-
-  while (page < totalPages) {
-    const result = await fetchUsers({ ...query, page, size: pageSize })
-    users.push(...result.content)
-    totalPages = result.totalPages
-    page += 1
-  }
-
-  return users
+  const result = await fetchUsers({ ...query, page: 0, size: -1 })
+  return result.content
 }
 
 export function fetchUser(id: number): Promise<User> {

@@ -8,11 +8,24 @@ import { WorldChoropleth } from '../components/charts/WorldChoropleth'
 import { useAnalyticsScope } from '../hooks/useAnalyticsScope'
 import { titleCase } from '../utils/format'
 
+interface BreakdownRow {
+  label: string
+  count: number
+}
+
+interface CountryComparison {
+  id: string
+  label: string
+  users: number
+  professions: BreakdownRow[]
+  cities: BreakdownRow[]
+}
+
 function buildCountryComparisons(
   selected: string[],
   mapCountries: LabelCount[],
   analytics: Analytics,
-) {
+): { rows: CountryComparison[]; selectionTotal: number } {
   const countByCountry = new Map(
     mapCountries.map((entry) => [entry.label.toLowerCase(), entry.count]),
   )
@@ -21,26 +34,84 @@ function buildCountryComparisons(
     .map((country) => {
       const key = country.toLowerCase()
       const users = countByCountry.get(key) ?? 0
-      const topCity = analytics.byCity.find((entry) => entry.country.toLowerCase() === key)
-      const topProfession = analytics.professionByCountry
+
+      const professions = analytics.professionByCountry
         .filter((cell) => cell.country.toLowerCase() === key)
-        .sort((a, b) => b.count - a.count)[0]
+        .map((cell) => ({
+          label: titleCase(cell.profession),
+          count: cell.count,
+        }))
+        .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+
+      const cities = analytics.byCity
+        .filter((entry) => entry.country.toLowerCase() === key)
+        .map((entry) => ({
+          label: titleCase(entry.city),
+          count: entry.count,
+        }))
+        .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
 
       return {
         id: country,
         label: titleCase(country),
         users,
-        topCity: topCity ? titleCase(topCity.city) : '—',
-        topCityCount: topCity?.count ?? 0,
-        topProfession: topProfession ? titleCase(topProfession.profession) : '—',
-        topProfessionCount: topProfession?.count ?? 0,
+        professions,
+        cities,
       }
     })
     .sort((a, b) => b.users - a.users)
 
   const selectionTotal = rows.reduce((sum, row) => sum + row.users, 0)
-
   return { rows, selectionTotal }
+}
+
+function BreakdownList({
+  title,
+  rows,
+  total,
+}: {
+  title: string
+  rows: BreakdownRow[]
+  total: number
+}) {
+  if (rows.length === 0) {
+    return (
+      <div className="country-compare__section">
+        <h4 className="country-compare__section-title">{title}</h4>
+        <p className="country-compare__empty">None in this scope</p>
+      </div>
+    )
+  }
+
+  const peak = Math.max(...rows.map((row) => row.count), 1)
+
+  return (
+    <div className="country-compare__section">
+      <h4 className="country-compare__section-title">{title}</h4>
+      <ul className="country-compare__breakdown">
+        {rows.map((row) => {
+          const share = total === 0 ? 0 : (row.count / total) * 100
+          return (
+            <li key={row.label} className="country-compare__breakdown-row">
+              <div className="country-compare__breakdown-meta">
+                <span className="country-compare__breakdown-label">{row.label}</span>
+                <span className="country-compare__breakdown-value">
+                  {row.count.toLocaleString()}
+                  <span>{share.toFixed(1)}%</span>
+                </span>
+              </div>
+              <span className="country-compare__breakdown-track" aria-hidden="true">
+                <span
+                  className="country-compare__breakdown-fill"
+                  style={{ width: `${(row.count / peak) * 100}%` }}
+                />
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
 }
 
 export function AnalyticsCountriesPage() {
@@ -118,7 +189,7 @@ export function AnalyticsCountriesPage() {
 
                   <ChartCard
                     title="Side-by-side"
-                    description="Users, share of the selection, leading city, and leading profession for each country."
+                    description="Full profession and city breakdown for each selected country."
                     span="full"
                   >
                     <div className="country-compare" role="list">
@@ -139,32 +210,18 @@ export function AnalyticsCountriesPage() {
                             </header>
                             <p className="country-compare__users">
                               {row.users.toLocaleString()}
-                              <span>users</span>
+                              <span>users · {share.toFixed(1)}% of selection</span>
                             </p>
-                            <dl className="country-compare__stats">
-                              <div>
-                                <dt>Of selection</dt>
-                                <dd>{share.toFixed(1)}%</dd>
-                              </div>
-                              <div>
-                                <dt>Top city</dt>
-                                <dd>
-                                  {row.topCity}
-                                  {row.topCityCount > 0
-                                    ? ` · ${row.topCityCount.toLocaleString()}`
-                                    : ''}
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>Top profession</dt>
-                                <dd>
-                                  {row.topProfession}
-                                  {row.topProfessionCount > 0
-                                    ? ` · ${row.topProfessionCount.toLocaleString()}`
-                                    : ''}
-                                </dd>
-                              </div>
-                            </dl>
+                            <BreakdownList
+                              title={`Professions (${row.professions.length})`}
+                              rows={row.professions}
+                              total={row.users}
+                            />
+                            <BreakdownList
+                              title={`Cities (${row.cities.length})`}
+                              rows={row.cities}
+                              total={row.users}
+                            />
                           </article>
                         )
                       })}
@@ -172,27 +229,6 @@ export function AnalyticsCountriesPage() {
                   </ChartCard>
                 </>
               )}
-
-              <ChartCard
-                title="Cities"
-                description={
-                  countries.length > 0
-                    ? `Top cities inside ${countries.length === 1 ? titleCase(countries[0]) : `${countries.length} selected countries`}.`
-                    : 'Top cities across the full directory. Select countries on the map to narrow this list.'
-                }
-                span="full"
-              >
-                <BarList
-                  total={analytics.totalUsers}
-                  items={analytics.byCity.slice(0, 20).map((entry) => ({
-                    label:
-                      countries.length === 1
-                        ? titleCase(entry.city)
-                        : `${titleCase(entry.city)} · ${titleCase(entry.country)}`,
-                    value: entry.count,
-                  }))}
-                />
-              </ChartCard>
             </div>
           </>
         )

@@ -77,7 +77,7 @@ export function AnalyticsPageShell({ eyebrow, title, children }: AnalyticsPageSh
               </button>
             ) : null}
             <button type="button" className="btn btn--secondary scope-banner__reset" onClick={clearScope}>
-              Clear filters
+              Clear all
             </button>
           </div>
         </div>

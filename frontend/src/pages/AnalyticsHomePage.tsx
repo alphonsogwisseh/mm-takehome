@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from 'react'
-import type { Analytics } from '../api/types'
-import { AnalyticsPageShell } from '../components/AnalyticsPageShell'
-import { BarList } from '../components/charts/BarList'
-import { ChartCard } from '../components/charts/ChartCard'
-import { DonutChart } from '../components/charts/DonutChart'
-import { HeatmapGrid } from '../components/charts/HeatmapGrid'
-import { StackedBars } from '../components/charts/StackedBars'
-import { TrendChart } from '../components/charts/TrendChart'
-import { yearProfessionStacks } from '../components/charts/yearStacks'
-import { useAnalyticsScope } from '../hooks/useAnalyticsScope'
-import { formatMonth, formatMonthShort, titleCase } from '../utils/format'
+import { useEffect, useMemo, useState } from "react";
+import type { Analytics } from "../api/types";
+import { AnalyticsPageShell } from "../components/AnalyticsPageShell";
+import { BarList } from "../components/charts/BarList";
+import { ChartCard } from "../components/charts/ChartCard";
+import { DonutChart } from "../components/charts/DonutChart";
+import { HeatmapGrid } from "../components/charts/HeatmapGrid";
+import { StackedBars } from "../components/charts/StackedBars";
+import { TrendChart } from "../components/charts/TrendChart";
+import { yearProfessionStacks } from "../components/charts/yearStacks";
+import { useAnalyticsScope } from "../hooks/useAnalyticsScope";
+import { formatMonth, formatMonthShort, titleCase } from "../utils/format";
 import {
   TREND_PRESETS,
   boundsFromMonths,
@@ -17,35 +17,38 @@ import {
   rangeForPreset,
   todayIso,
   type TrendPreset,
-} from '../utils/trendRange'
+} from "../utils/trendRange";
 
-const TOP_COUNTRY_LIMIT = 12
+const TOP_COUNTRY_LIMIT = 12;
 
 function summarize(analytics: Analytics) {
-  const { colors, groups } = yearProfessionStacks(analytics)
-  const professions = analytics.byProfession.map((entry) => entry.label)
+  const { colors, groups } = yearProfessionStacks(analytics);
+  const professions = analytics.byProfession.map((entry) => entry.label);
 
   const matrixCountries = analytics.byCountry
     .slice(0, 10)
     .map((entry) => entry.label)
     .filter((country) =>
       analytics.professionByCountry.some((cell) => cell.country === country),
-    )
+    );
 
   const matrixLookup = new Map(
-    analytics.professionByCountry.map((cell) => [`${cell.country}|${cell.profession}`, cell.count]),
-  )
+    analytics.professionByCountry.map((cell) => [
+      `${cell.country}|${cell.profession}`,
+      cell.count,
+    ]),
+  );
 
   const trendAll = analytics.byMonth.map((entry) => ({
     label: formatMonth(entry.year, entry.month),
     shortLabel: formatMonthShort(entry.year, entry.month),
     value: entry.count,
-  }))
+  }));
 
   const busiest = trendAll.reduce(
     (best, point) => (point.value > best.value ? point : best),
-    { label: '—', shortLabel: '—', value: 0 },
-  )
+    { label: "—", shortLabel: "—", value: 0 },
+  );
 
   return {
     colors,
@@ -54,58 +57,62 @@ function summarize(analytics: Analytics) {
     matrixCountries,
     matrixLookup,
     busiest,
-  }
+  };
 }
 
 function OverviewBody({ analytics }: { analytics: Analytics }) {
-  const { professions, countries, toggleProfession, toggleCountry } = useAnalyticsScope()
-  const [preset, setPreset] = useState<TrendPreset>('all')
-  const [from, setFrom] = useState('')
-  const [to, setTo] = useState('')
+  const { professions, countries, toggleProfession, toggleCountry } =
+    useAnalyticsScope();
+  const [preset, setPreset] = useState<TrendPreset>("all");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
-  const view = useMemo(() => summarize(analytics), [analytics])
-  const bounds = useMemo(() => boundsFromMonths(analytics.byMonth), [analytics.byMonth])
-  const today = useMemo(() => todayIso(), [])
+  const view = useMemo(() => summarize(analytics), [analytics]);
+  const bounds = useMemo(
+    () => boundsFromMonths(analytics.byMonth),
+    [analytics.byMonth],
+  );
+  const today = useMemo(() => todayIso(), []);
 
   useEffect(() => {
     if (!bounds) {
-      setFrom('')
-      setTo('')
-      return
+      setFrom("");
+      setTo("");
+      return;
     }
-    if (preset === 'custom') {
+    if (preset === "custom") {
       setFrom((current) => {
-        const value = current || bounds.earliest
-        if (value < bounds.earliest) return bounds.earliest
-        if (value > today) return today
-        return value
-      })
+        const value = current || bounds.earliest;
+        if (value < bounds.earliest) return bounds.earliest;
+        if (value > today) return today;
+        return value;
+      });
       setTo((current) => {
-        const value = current || today
-        if (value < bounds.earliest) return bounds.earliest
-        if (value > today) return today
-        return value
-      })
-      return
+        const value = current || today;
+        if (value < bounds.earliest) return bounds.earliest;
+        if (value > today) return today;
+        return value;
+      });
+      return;
     }
-    const next = rangeForPreset(preset, bounds.earliest, bounds.latest, today)
-    setFrom(next.from)
-    setTo(next.to)
-  }, [bounds, preset, today])
+    const next = rangeForPreset(preset, bounds.earliest, bounds.latest, today);
+    setFrom(next.from);
+    setTo(next.to);
+  }, [bounds, preset, today]);
 
   const trend = useMemo(() => {
-    const months = filterMonthsByRange(analytics.byMonth, from, to)
+    const months = filterMonthsByRange(analytics.byMonth, from, to);
     return months.map((entry) => ({
       label: formatMonth(entry.year, entry.month),
       shortLabel: formatMonthShort(entry.year, entry.month),
       value: entry.count,
-    }))
-  }, [analytics.byMonth, from, to])
+    }));
+  }, [analytics.byMonth, from, to]);
 
   const rangeLabel =
     from && to
       ? `${formatMonth(Number(from.slice(0, 4)), Number(from.slice(5, 7)))} – ${formatMonth(Number(to.slice(0, 4)), Number(to.slice(5, 7)))}`
-      : 'full history'
+      : "full history";
 
   return (
     <>
@@ -120,7 +127,9 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
         </article>
         <article className="kpi">
           <p className="kpi__label">Countries</p>
-          <p className="kpi__value">{analytics.countryCount.toLocaleString()}</p>
+          <p className="kpi__value">
+            {analytics.countryCount.toLocaleString()}
+          </p>
         </article>
         <article className="kpi">
           <p className="kpi__label">Busiest month</p>
@@ -136,12 +145,16 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
           actions={
             bounds ? (
               <div className="trend-range">
-                <div className="trend-range__presets" role="group" aria-label="Trend range">
+                <div
+                  className="trend-range__presets"
+                  role="group"
+                  aria-label="Trend range"
+                >
                   {TREND_PRESETS.map((option) => (
                     <button
                       key={option.id}
                       type="button"
-                      className={`trend-range__preset${preset === option.id ? ' is-active' : ''}`}
+                      className={`trend-range__preset${preset === option.id ? " is-active" : ""}`}
                       onClick={() => setPreset(option.id)}
                     >
                       {option.label}
@@ -157,8 +170,8 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
                       min={bounds.earliest}
                       max={to && to < today ? to : today}
                       onChange={(event) => {
-                        setPreset('custom')
-                        setFrom(event.target.value)
+                        setPreset("custom");
+                        setFrom(event.target.value);
                       }}
                     />
                   </label>
@@ -170,11 +183,13 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
                     <input
                       type="date"
                       value={to}
-                      min={from && from > bounds.earliest ? from : bounds.earliest}
+                      min={
+                        from && from > bounds.earliest ? from : bounds.earliest
+                      }
                       max={today}
                       onChange={(event) => {
-                        setPreset('custom')
-                        setTo(event.target.value)
+                        setPreset("custom");
+                        setTo(event.target.value);
                       }}
                     />
                   </label>
@@ -199,7 +214,7 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
               id: entry.label,
               label: titleCase(entry.label),
               value: entry.count,
-              color: view.colors.get(entry.label) ?? '#3b82f6',
+              color: view.colors.get(entry.label) ?? "#3b82f6",
             }))}
           />
         </ChartCard>
@@ -208,11 +223,14 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
           title="Intake by year"
           description="Same profession order in every bar (matches the legend). Hover a band for exact counts."
         >
-          <StackedBars groups={view.groups} caption="Signups per year by profession" />
+          <StackedBars
+            groups={view.groups}
+            caption="Signups per year by profession"
+          />
           <ul className="legend">
             {view.professions.map((name) => (
               <li
-                className={`legend__item is-clickable${professions.some((item) => item.toLowerCase() === name.toLowerCase()) ? ' is-selected' : ''}`}
+                className={`legend__item is-clickable${professions.some((item) => item.toLowerCase() === name.toLowerCase()) ? " is-selected" : ""}`}
                 key={name}
                 onClick={() => toggleProfession(name)}
               >
@@ -235,11 +253,13 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
             total={analytics.totalUsers}
             selectedIds={countries}
             onSelect={toggleCountry}
-            items={analytics.byCountry.slice(0, TOP_COUNTRY_LIMIT).map((entry) => ({
-              id: entry.label,
-              label: titleCase(entry.label),
-              value: entry.count,
-            }))}
+            items={analytics.byCountry
+              .slice(0, TOP_COUNTRY_LIMIT)
+              .map((entry) => ({
+                id: entry.label,
+                label: titleCase(entry.label),
+                value: entry.count,
+              }))}
           />
         </ChartCard>
 
@@ -256,12 +276,14 @@ function OverviewBody({ analytics }: { analytics: Analytics }) {
               key: name,
               label: titleCase(name),
             }))}
-            valueAt={(row, column) => view.matrixLookup.get(`${row}|${column}`) ?? 0}
+            valueAt={(row, column) =>
+              view.matrixLookup.get(`${row}|${column}`) ?? 0
+            }
           />
         </ChartCard>
       </div>
     </>
-  )
+  );
 }
 
 export function AnalyticsHomePage() {
@@ -269,5 +291,5 @@ export function AnalyticsHomePage() {
     <AnalyticsPageShell title="Overview">
       {({ analytics }) => <OverviewBody analytics={analytics} />}
     </AnalyticsPageShell>
-  )
+  );
 }

@@ -15,12 +15,13 @@ export function Pagination({
   totalPages,
   totalElements,
   size,
-  pageSizeOptions = [10, 20, 50, 100],
+  pageSizeOptions = [10, 20, 50, 100, -1],
   onPageChange,
   onPageSizeChange,
 }: PaginationProps) {
-  const start = totalElements === 0 ? 0 : page * size + 1
-  const end = Math.min((page + 1) * size, totalElements)
+  const showingAll = size < 0
+  const start = totalElements === 0 ? 0 : showingAll ? 1 : page * size + 1
+  const end = totalElements === 0 ? 0 : showingAll ? totalElements : Math.min((page + 1) * size, totalElements)
   const displayPage = totalPages === 0 ? 0 : page + 1
   const [draft, setDraft] = useState(String(displayPage))
 
@@ -29,8 +30,8 @@ export function Pagination({
   }, [displayPage])
 
   function commitPage() {
-    if (totalPages === 0) {
-      setDraft('0')
+    if (totalPages === 0 || showingAll) {
+      setDraft(String(displayPage))
       return
     }
 
@@ -63,7 +64,7 @@ export function Pagination({
             >
               {pageSizeOptions.map((option) => (
                 <option key={option} value={option}>
-                  {option}
+                  {option < 0 ? 'All' : option}
                 </option>
               ))}
             </select>
@@ -76,7 +77,7 @@ export function Pagination({
         <button
           type="button"
           className="btn btn--secondary"
-          disabled={page <= 0}
+          disabled={showingAll || page <= 0}
           onClick={() => onPageChange(page - 1)}
         >
           Previous
@@ -90,7 +91,7 @@ export function Pagination({
             pattern="[0-9]*"
             aria-label="Page number"
             value={draft}
-            disabled={totalPages === 0}
+            disabled={totalPages === 0 || showingAll}
             onChange={(event) => setDraft(event.target.value.replace(/\D/g, ''))}
             onBlur={commitPage}
             onKeyDown={(event) => {
@@ -101,13 +102,13 @@ export function Pagination({
               }
             }}
           />
-          <span>of {totalPages}</span>
+          <span>of {showingAll ? 1 : totalPages}</span>
         </label>
 
         <button
           type="button"
           className="btn btn--secondary"
-          disabled={page + 1 >= totalPages}
+          disabled={showingAll || page + 1 >= totalPages}
           onClick={() => onPageChange(page + 1)}
         >
           Next

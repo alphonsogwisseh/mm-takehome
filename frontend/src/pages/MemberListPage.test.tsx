@@ -218,6 +218,21 @@ describe('MemberListPage', () => {
     })
   })
 
+  it('can show all matching rows on one page', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    await screen.findByRole('link', { name: /Andree Flita/i })
+
+    await user.selectOptions(screen.getByLabelText(/rows per page/i), 'All')
+
+    await waitFor(() => {
+      expect(mockedApi.fetchUsers).toHaveBeenCalledWith(
+        expect.objectContaining({ size: -1, page: 0 }),
+      )
+    })
+  })
+
   it('filters by created date range', async () => {
     const user = userEvent.setup()
     renderPage()

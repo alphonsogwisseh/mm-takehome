@@ -1,26 +1,29 @@
-import { AnalyticsPageShell } from '../components/AnalyticsPageShell'
-import { BarList } from '../components/charts/BarList'
-import { ChartCard } from '../components/charts/ChartCard'
-import { PieChart } from '../components/charts/PieChart'
-import { StackedBars } from '../components/charts/StackedBars'
-import { yearProfessionStacks } from '../components/charts/yearStacks'
-import { useAnalyticsScope } from '../hooks/useAnalyticsScope'
-import { titleCase } from '../utils/format'
+import { AnalyticsPageShell } from "../components/AnalyticsPageShell";
+import { BarList } from "../components/charts/BarList";
+import { ChartCard } from "../components/charts/ChartCard";
+import { PieChart } from "../components/charts/PieChart";
+import { StackedBars } from "../components/charts/StackedBars";
+import { yearProfessionStacks } from "../components/charts/yearStacks";
+import { useAnalyticsScope } from "../hooks/useAnalyticsScope";
+import { titleCase } from "../utils/format";
 
 export function AnalyticsProfessionsPage() {
-  const { professions, toggleProfession } = useAnalyticsScope()
+  const { professions, toggleProfession } = useAnalyticsScope();
 
   return (
     <AnalyticsPageShell eyebrow="Professions" title="Workforce composition">
       {({ analytics }) => {
-        const { colors, groups } = yearProfessionStacks(analytics)
+        const { colors, groups } = yearProfessionStacks(analytics);
 
-        const leader = analytics.byProfession[0]
-        const runnerUp = analytics.byProfession[1]
+        const leader = analytics.byProfession[0];
+        const runnerUp = analytics.byProfession[1];
 
         return (
           <>
-            <section className="kpi-row reveal-2" aria-label="Profession headlines">
+            <section
+              className="kpi-row reveal-2"
+              aria-label="Profession headlines"
+            >
               <article className="kpi">
                 <p className="kpi__label">Distinct roles</p>
                 <p className="kpi__value">{analytics.professionCount}</p>
@@ -28,13 +31,13 @@ export function AnalyticsProfessionsPage() {
               <article className="kpi">
                 <p className="kpi__label">Leading role</p>
                 <p className="kpi__value kpi__value--text">
-                  {leader ? titleCase(leader.label) : '—'}
+                  {leader ? titleCase(leader.label) : "—"}
                 </p>
               </article>
               <article className="kpi">
                 <p className="kpi__label">Runner-up</p>
                 <p className="kpi__value kpi__value--text">
-                  {runnerUp ? titleCase(runnerUp.label) : '—'}
+                  {runnerUp ? titleCase(runnerUp.label) : "—"}
                 </p>
               </article>
             </section>
@@ -52,7 +55,7 @@ export function AnalyticsProfessionsPage() {
                     id: entry.label,
                     label: titleCase(entry.label),
                     value: entry.count,
-                    color: colors.get(entry.label) ?? '#3b82f6',
+                    color: colors.get(entry.label) ?? "#3b82f6",
                   }))}
                 />
               </ChartCard>
@@ -78,11 +81,14 @@ export function AnalyticsProfessionsPage() {
                 description="Each bar uses the same profession order as the legend (top → bottom). Click a legend item to filter."
                 span="full"
               >
-                <StackedBars groups={groups} caption="Yearly profession intake" />
+                <StackedBars
+                  groups={groups}
+                  caption="Yearly profession intake"
+                />
                 <ul className="legend">
                   {analytics.byProfession.map((entry) => (
                     <li
-                      className={`legend__item is-clickable${professions.some((item) => item.toLowerCase() === entry.label.toLowerCase()) ? ' is-selected' : ''}`}
+                      className={`legend__item is-clickable${professions.some((item) => item.toLowerCase() === entry.label.toLowerCase()) ? " is-selected" : ""}`}
                       key={entry.label}
                       onClick={() => toggleProfession(entry.label)}
                     >
@@ -98,8 +104,8 @@ export function AnalyticsProfessionsPage() {
               </ChartCard>
             </div>
           </>
-        )
+        );
       }}
     </AnalyticsPageShell>
-  )
+  );
 }

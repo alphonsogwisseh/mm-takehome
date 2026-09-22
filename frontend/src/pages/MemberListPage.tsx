@@ -18,7 +18,7 @@ import { Pagination } from '../components/Pagination'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { downloadCsv, usersToCsv, buildExportFilename } from '../utils/csv'
 
-const PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
+const PAGE_SIZE_OPTIONS = [10, 20, 50, 100, -1] as const
 
 function pageFromSearchParams(params: URLSearchParams): number {
   const raw = Number.parseInt(params.get('page') ?? '1', 10)
@@ -250,7 +250,7 @@ export function MemberListPage() {
               {hasFilters ? (
                 <div style={{ marginTop: 16 }}>
                   <button type="button" className="btn btn--secondary" onClick={clearFilters}>
-                    Clear filters
+                    Clear all
                   </button>
                 </div>
               ) : null}

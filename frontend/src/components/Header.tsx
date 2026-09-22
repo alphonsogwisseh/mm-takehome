@@ -1,6 +1,6 @@
-import { NavLink } from 'react-router-dom'
-import { useTheme } from '../hooks/useTheme.tsx'
-import { MoonIcon, SunIcon } from './icons'
+import { NavLink } from "react-router-dom";
+import { useTheme } from "../hooks/useTheme.tsx";
+import { MoonIcon, SunIcon } from "./icons";
 
 function DashboardMark({ className }: { className?: string }) {
   return (
@@ -12,7 +12,14 @@ function DashboardMark({ className }: { className?: string }) {
       aria-hidden="true"
     >
       <defs>
-        <linearGradient id="dash-mark-bg" x1="6" y1="2" x2="32" y2="34" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="dash-mark-bg"
+          x1="6"
+          y1="2"
+          x2="32"
+          y2="34"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop stopColor="currentColor" />
           <stop offset="1" stopColor="currentColor" stopOpacity="0.82" />
         </linearGradient>
@@ -23,11 +30,11 @@ function DashboardMark({ className }: { className?: string }) {
         fill="white"
       />
     </svg>
-  )
+  );
 }
 
 export function Header() {
-  const { isDark, toggleTheme } = useTheme()
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <header className="site-header">
@@ -42,7 +49,7 @@ export function Header() {
               to="/"
               end
               className={({ isActive }) =>
-                `site-header__link${isActive ? ' is-active' : ''}`
+                `site-header__link${isActive ? " is-active" : ""}`
               }
             >
               Users
@@ -50,7 +57,7 @@ export function Header() {
             <NavLink
               to="/analytics"
               className={({ isActive }) =>
-                `site-header__link${isActive ? ' is-active' : ''}`
+                `site-header__link${isActive ? " is-active" : ""}`
               }
             >
               Analytics
@@ -60,13 +67,13 @@ export function Header() {
             type="button"
             className="theme-toggle"
             onClick={toggleTheme}
-            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            title={isDark ? 'Light mode' : 'Dark mode'}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            title={isDark ? "Light mode" : "Dark mode"}
           >
             {isDark ? <SunIcon size={17} /> : <MoonIcon size={17} />}
           </button>
         </div>
       </div>
     </header>
-  )
+  );
 }

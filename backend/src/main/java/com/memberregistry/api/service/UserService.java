@@ -31,6 +31,10 @@ import org.springframework.util.StringUtils;
 @Transactional(readOnly = true)
 public class UserService {
 
+    /** Negative size means return every matching row (used by the UI "All" page size). */
+    private static final int ALL_PAGE_SIZE = -1;
+    private static final int MAX_PAGE_SIZE = 100;
+
     private static final Set<String> SORTABLE_FIELDS = Set.of(
             "id",
             "firstName",
@@ -61,13 +65,13 @@ public class UserService {
             int page,
             int size,
             String sort) {
-        Pageable pageable = PageRequest.of(Math.max(page, 0), clampSize(size), parseSort(sort));
         Specification<User> spec = UserSpecifications.withFilters(
                 search,
                 normalizeLabels(professions),
                 normalizeLabels(countries),
                 dateCreatedFrom,
                 dateCreatedTo);
+        Pageable pageable = toPageable(page, size, parseSort(sort));
         Page<User> result = userRepository.findAll(spec, pageable);
         List<UserResponse> content = result.getContent().stream().map(this::toResponse).toList();
         return new PagedResponse<>(
@@ -197,11 +201,18 @@ public class UserService {
                 user.getCity());
     }
 
+    private Pageable toPageable(int page, int size, Sort sort) {
+        if (size == ALL_PAGE_SIZE) {
+            return Pageable.unpaged(sort);
+        }
+        return PageRequest.of(Math.max(page, 0), clampSize(size), sort);
+    }
+
     private int clampSize(int size) {
         if (size < 1) {
             return 20;
         }
-        return Math.min(size, 100);
+        return Math.min(size, MAX_PAGE_SIZE);
     }
 
     private Sort parseSort(String sort) {
